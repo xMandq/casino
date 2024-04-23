@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Growdice Predictor</title>
+    <link rel="icon" type="image/webp" href="icon.webp">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1b1e27;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #container {
+            background-color: #171921;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #3b82f6;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        label {
+            margin: 10px;
+            font-size: 16px;
+            color: #ffffff;
+        }
+
+        #output {
+            margin-top: 20px;
+            color: #ffffff;
+        }
+
+        input::placeholder {
+            color: #6b7280;
+            font-style: italic;
+        }
+
+        input:hover {
+            background-color: #2c3e50;
+        }
+
+        input, select {
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            background-color: #4a5568;
+            color: #ffffff;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>Seed Checker</h1>
+        <label for="seedInput">Enter Seed:</label>
+        <input type="text" maxlength="10" id="seedInput" placeholder="Enter seed...">
+        <div id="output"></div>
+    </div>
+
+    <script>
+        document.getElementById("seedInput").addEventListener("input", function() {
+            checkSeedLength();
+        });
+
+        function checkSeedLength() {
+            var seed = document.getElementById('seedInput').value.trim();
+
+            if (seed.length === 10) {
+                document.getElementById('output').textContent = 'Yes';
+            } else {
+                document.getElementById('output').textContent = '';
+            }
+        }
+
+        checkSeedLength();
+    </script>
+</body>
+</html>

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tower Predictor</title>
+    <link rel="icon" type="image/webp" href="icon.webp">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #0f0f16;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #container {
+            background-color: #171921;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #3b82f6;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        table {
+            margin: auto;
+            margin-top: 20px;
+            border-collapse: separate;
+            border-spacing: 5px;
+            width: 80%;
+            background-color: #2c3e50;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            color: #585858;
+            text-align: center;
+        }
+
+        img {
+            width: 30px;
+            height: 30px;
+            object-fit: cover;
+            border-radius: 5px;
+            transition: transform 0.2s ease;
+        }
+
+        img:hover {
+            transform: scale(1.1);
+        }
+
+        .block,
+        .base,
+        .top,
+        .bomb,
+        .gem {
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .bomb {
+            background-color: #b91c1c;
+        }
+
+        .gem {
+            background-color: #169222;
+        }
+
+        .block {
+            background-color: #15232c;
+        }
+
+        .base {
+            background-color: #12414e;
+        }
+
+        .top {
+            background-color: #481c22;
+        }
+
+        #difficulty-container {
+            margin-top: 20px;
+        }
+
+        #difficultyInput {
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            background-color: #4a5568;
+            color: #ffffff;
+            box-sizing: border-box;
+            margin-top: 5px;
+        }
+
+        #difficultyInput:hover {
+            background-color: #2c3e50;
+        }
+
+        #seed-container {
+            margin-top: 20px;
+        }
+
+        #seedInput {
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            background-color: #4a5568;
+            color: #ffffff;
+            box-sizing: border-box;
+            margin-top: 5px;
+        }
+
+        #seedInput:hover {
+            background-color: #2c3e50;
+        }
+
+        .back-button {
+            margin-top: 30px;
+            cursor: pointer;
+            padding: 10px;
+            background-color: #2c3e50;
+            color: #ffffff;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #3b82f6;
+        }
+
+        input::placeholder {
+            color: #6b7280;
+            font-style: italic;
+        }
+        #container,
+        #seedInput{
+            position: relative;
+            display: inline-block;
+            margin: 10px;
+        }
+
+        .star {
+            position: absolute;
+            border-radius: 50%;
+            background: #cdcdcf;
+            animation: twinkle 3s linear infinite;
+        }
+
+        @keyframes twinkle {
+            0% {
+                opacity: 0;
+            }
+            25% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .made-by {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            color: #777777;
+            font-size: 14px;
+            font-style: italic;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0);
+            }
+            50% {
+                transform: translate(0, 5px);
+            }
+            100% {
+                transform: translate(0, 0);
+            }
+        }
+
+        .made-by {
+            animation: float 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="stars">
+        <script>
+            const numStars = 100;
+            const container = document.querySelector('.stars');
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.left = `${Math.random() * 100}%`;
+                const size = Math.random() * 2;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                container.appendChild(star);
+            }
+        </script>
+    </div>
+    <div id="container">
+        <h1>Tower Predictor</h1>
+        <div id="difficulty-container">
+            <input type="text" maxlength="10" id="seedInput" placeholder="Enter seed..." oninput="generateTower()">
+            <select id="difficultyInput" onchange="generateTower()">
+                <option value="easy">Easy</option>
+                <option value="normal">Normal</option>
+                <option value="hard">Hard</option>
+            </select>
+        </div>
+    
+        <table id="towerTable">
+            <tr>
+                <th colspan="10">Tower</th>
+            </tr>
+        </table>
+        <div class="back-button" onclick="location.href='index.html'">Back to Main Page</div>
+    </div>    
+
+    <script>
+function generateTower() {
+    var difficulty = document.getElementById("difficultyInput").value;
+    var seed = document.getElementById("seedInput").value;
+    var cols = (difficulty === "easy") ? 4 : ((difficulty === "normal") ? 3 : 2);
+    var rows = 10;
+
+    var towerTable = "";
+    if (seed.length === 10) {
+        for (var i = 0; i < rows; i++) {
+            towerTable += "<tr>";
+
+            var bombIndex = getRandomBombIndex(cols, seed + i);
+
+            for (var j = 0; j < cols; j++) {
+                var isBomb = (j === bombIndex);
+                var blockClass = isBomb ? 'bomb' : 'gem';
+                var backgroundColor = isBomb ? 'background-color: #b91c1c;' : 'background-color: #169222;';
+                var content = isBomb ? "<img src='skull.webp' class='tower-img'>" : "<img src='gem.webp' class='tower-img'>";
+                towerTable += "<td class='" + blockClass + "' style='" + backgroundColor + "'>" + content + "</td>";
+            }
+
+            towerTable += "</tr>";
+        }
+    } else {
+        for (var i = 0; i < rows; i++) {
+            towerTable += "<tr>";
+            for (var j = 0; j < cols; j++) {
+                var blockClass = 'gem';
+                var backgroundColor = 'background-color: #15232c;';
+                var content = "<img src='skull.webp' class='tower-img'>";
+                towerTable += "<td class='" + blockClass + "' style='" + backgroundColor + "'>" + content + "</td>";
+            }
+            towerTable += "</tr>";
+        }
+    }
+
+    document.getElementById("towerTable").innerHTML = towerTable;
+}
+
+function getRandomBombIndex(cols, seed) {
+    var seedNum = 0;
+    for (var i = 0; i < seed.length; i++) {
+        seedNum += seed.charCodeAt(i);
+    }
+    var random = Math.floor(Math.random() * cols);
+    return (seedNum + random) % cols;
+}
+
+generateTower();
+
+document.getElementById("seedInput").addEventListener("input", function() {
+    var seed = document.getElementById("seedInput").value;
+    if (seed.length === 10) {
+        generateTower();
+    }
+});
+
+    </script>
+        <div class="made-by">Made by Mandq</div>
+</body>
+</html>

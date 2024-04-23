@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Growdice Predictor</title>
+    <link rel="icon" type="image/webp" href="icon.webp">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #0f0f16;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #container {
+            position: relative;
+            z-index: 1;
+            background-color: #171921;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 800px;
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        h1 {
+            color: #3b82f6;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        label {
+            margin: 10px;
+            font-size: 16px;
+            color: #ffffff;
+        }
+
+        #output {
+            margin-top: 20px;
+        }
+
+        .coin-images {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .coin-image_head, .coin-image_tail {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 5px;
+            transition: transform 0.2s ease;
+            margin: 0 5px;
+        }
+
+        .back-button {
+            margin-top: 30px;
+            cursor: pointer;
+            padding: 10px;
+            background-color: #2c3e50;
+            color: #ffffff;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #3b82f6;
+        }
+
+        .result-table {
+            margin: 10px;
+            width: calc(50% - 20px);
+            background-color: #2c3e50;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+        }
+
+        .result-table table {
+            width: 100%;
+        }
+        
+        .result-table tr {
+            padding: 15px;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .result-table td {
+            padding: 10px;
+            width: 50%;
+            text-align: center;
+        }
+
+        input::placeholder {
+            color: #6b7280;
+            font-style: italic;
+        }
+
+        input:hover,
+        select:hover {
+            background-color: #2c3e50;
+        }
+
+        img:hover {
+            transition: transform 1s ease; /* Increased transition duration */
+            /* transform: rotateY(360deg); */
+            transform: scale(1.1);
+        }
+
+        input,
+        select {
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            background-color: #4a5568;
+            color: #ffffff;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 5px;
+        }
+
+        .star {
+            position: absolute;
+            border-radius: 50%;
+            background: #cdcdcf;
+            animation: twinkle 3s linear infinite;
+        }
+
+        .made-by {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            color: #777777;
+            font-size: 14px;
+            font-style: italic;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0);
+            }
+            50% {
+                transform: translate(0, 5px);
+            }
+            100% {
+                transform: translate(0, 0);
+            }
+        }
+
+        .made-by {
+            animation: float 2s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0% {
+                opacity: 0;
+            }
+            25% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .green {
+            color: rgb(123, 255, 123);
+        }
+
+        .red {
+            color: rgb(255, 96, 96);
+        }
+
+        .empty {
+            color: #15232c;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="stars">
+        <script>
+            const numStars = 100;
+            const container = document.querySelector('.stars');
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.left = `${Math.random() * 100}%`;
+                const size = Math.random() * 2;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                container.appendChild(star);
+            }
+        </script>
+    </div>
+    <div id="container">
+        <h1>Coin Flip Predictor</h1>
+        
+        <input type="text" maxlength="10" id="seedInput" placeholder="Enter seed...">
+        <div id="output"></div>
+        <div class="coin-images" id="coinImages"></div>
+        <div class="result-table" id="resultTable"></div>
+        <div class="result-table" id="resultTable2"></div>
+        <div class="result-table" id="resultTable3"></div>
+        <div class="result-table" id="resultTable4"></div>
+        <div class="result-table" id="resultTable5"></div>
+        <div class="result-table" id="resultTable6"></div>
+        <div class="result-table" id="resultTable7"></div>
+        <div class="result-table" id="resultTable8"></div>
+        <div class="result-table" id="resultTable9"></div>
+        <div class="result-table" id="resultTable10"></div>
+        <div class="back-button" onclick="location.href='index.html'">Back to Main Page</div>
+
+    </div>
+
+    <script>
+        var seedCache = {};
+
+        function flipCoin() {
+    var seed = document.getElementById('seedInput').value.trim();
+
+    if (seed.length === 10) {
+        document.getElementById('output').style.display = 'none';
+        
+        document.getElementById('coinImages').innerHTML = '';
+
+        if (seed in seedCache) {
+            displayResults(seedCache[seed], 'resultTable');
+            displayResults(generateRandomPercentages(), 'resultTable2');
+            displayResults(generateRandomPercentages(), 'resultTable3');
+            displayResults(generateRandomPercentages(), 'resultTable4');
+            displayResults(generateRandomPercentages(), 'resultTable5');
+            displayResults(generateRandomPercentages(), 'resultTable6');
+            displayResults(generateRandomPercentages(), 'resultTable7');
+            displayResults(generateRandomPercentages(), 'resultTable8');
+            displayResults(generateRandomPercentages(), 'resultTable9');
+            displayResults(generateRandomPercentages(), 'resultTable10');
+
+        } else {
+            var percentages = generateRandomPercentages();
+            seedCache[seed] = percentages;
+
+            displayResults(percentages, 'resultTable');
+            displayResults(generateRandomPercentages(), 'resultTable2');
+            displayResults(generateRandomPercentages(), 'resultTable3');
+            displayResults(generateRandomPercentages(), 'resultTable4');
+            displayResults(generateRandomPercentages(), 'resultTable5');
+            displayResults(generateRandomPercentages(), 'resultTable6');
+            displayResults(generateRandomPercentages(), 'resultTable7');
+            displayResults(generateRandomPercentages(), 'resultTable8');
+            displayResults(generateRandomPercentages(), 'resultTable9');
+            displayResults(generateRandomPercentages(), 'resultTable10');
+        }
+    } else {
+        document.getElementById('output').style.display = 'block';
+        var tables = document.querySelectorAll('.result-table');
+        tables.forEach(function(table) {
+            table.innerHTML = '<table class="result-table">' +
+                '<tr>' +
+                '<td class="red">N/a</td>' +
+                '<td class="red">N/a</td>' +
+                '</tr>' +
+                '</table>';
+        });
+
+        document.getElementById('coinImages').innerHTML = '';
+    }
+}
+
+
+        function displayResults(percentages, tableId) {
+            var resultTable = document.getElementById(tableId);
+            var coinImages = document.getElementById('coinImages');
+            var tableHtml = '<table class="result-table">' +
+                '<tr>' +
+                '<td class="result-table-td ' + (percentages[0] > percentages[1] ? 'green' : 'red') + '">' + percentages[0] + '%</td>' +
+                '<td class="result-table-td ' + (percentages[1] > percentages[0] ? 'green' : 'red') + '">' + percentages[1] + '%</td>' +
+                '</tr>' +
+                '</table>';
+            
+            var resultImg = '<img src="' + (percentages[0] > percentages[1] ? 'head.webp' : 'tail.webp') + '" class="coin-image_' + (percentages[0] > percentages[1] ? 'head' : 'tail') + '">';
+
+            resultTable.innerHTML = tableHtml;
+            coinImages.innerHTML += resultImg;
+        }
+
+        function generateRandomPercentages() {
+            var headPercentage = Math.random() * 100;
+            var tailPercentage = 100 - headPercentage;
+            return [headPercentage.toFixed(1), tailPercentage.toFixed(1)];
+        }
+
+        document.getElementById("seedInput").addEventListener("input", function() {
+            flipCoin();
+        });
+
+        flipCoin();
+    </script>
+    <div class="made-by">Made by Mandq</div>
+</body>
+</html>

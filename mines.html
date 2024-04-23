@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mines Predictor</title>
+    <link rel="icon" type="image/webp" href="icon.webp">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #0f0f16;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #container {
+            background-color: #171921;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #3b82f6;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        label {
+            margin: 10px;
+            font-size: 16px;
+            color: #ffffff;
+        }
+
+        #seed-container,
+        #dropdown-container,
+        #mines-container {
+            position: relative;
+            display: inline-block;
+            margin: 10px;
+        }
+
+        input,
+        select {
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            background-color: #4a5568;
+            color: #ffffff;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 5px;
+        }
+
+        input:hover,
+        select:hover {
+            background-color: #2c3e50;
+        }
+
+        .made-by {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            color: #777777;
+            font-size: 14px;
+            font-style: italic;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0);
+            }
+            50% {
+                transform: translate(0, 5px);
+            }
+            100% {
+                transform: translate(0, 0);
+            }
+        }
+
+        .made-by {
+            animation: float 2s ease-in-out infinite;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .back-button {
+            margin-top: 50px;
+            cursor: pointer;
+            padding: 10px;
+            background-color: #2c3e50;
+            color: #ffffff;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #3b82f6;
+        }
+
+        table {
+            margin: auto;
+            margin-top: 20px;
+            border-collapse: separate;
+            border-spacing: 15px;
+            width: 100%;
+            background-color: rgb(39, 39, 51);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 20px;
+            color: #ffffff;
+        }
+
+        th {
+            background-color: #3b82f6;
+            border-radius: 10px 10px 0 0;
+        }
+
+        img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 5px;
+            transition: transform 0.2s ease;
+        }
+
+        img:hover {
+            transform: scale(1.1);
+        }
+
+        .nobox {
+            background-color: #15232c;
+            border-radius: 5px;
+        }
+
+        .safe {
+            background-color: #12414e;
+            border-radius: 5px;
+        }
+
+        .mine {
+            background-color: #481c22;
+            border-radius: 5px;
+        }
+
+        #output {
+            margin-top: 20px;
+        }
+
+        #result {
+            margin-top: 10px;
+            font-size: 18px;
+            color: #6b7280;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .tab {
+            cursor: pointer;
+            color: #ffffff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .tab:hover {
+            color: #3b82f6;
+        }
+
+        input::placeholder {
+            color: #6b7280;
+            font-style: italic;
+        }
+
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            border-radius: 50%;
+            background: #cdcdcf;
+            animation: twinkle 3s linear infinite;
+        }
+
+        @keyframes twinkle {
+            0% {
+                opacity: 0;
+            }
+            25% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars">
+        <script>
+            const numStars = 100;
+            const container = document.querySelector('.stars');
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.left = `${Math.random() * 100}%`;
+                const size = Math.random() * 2;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                container.appendChild(star);
+            }
+        </script>
+    </div>
+
+    <div id="container">
+        <h1>Mines Predictor</h1>
+        <div id="seed-container">
+            <input type="text" maxlength="10" id="seedInput" placeholder="Enter seed...">
+        </div>
+        <div id="dropdown-container">
+            <select id="riskLevelInput">
+                <option value="1">Safe</option>
+                <option value="2">Risky</option>
+                <option value="3">High Risk</option>
+            </select>
+            
+        </div>
+        <div id="output"></div>
+        <div class="back-button" onclick="location.href='index.html'">Back to Main Page</div>
+
+    </div>
+    <script>
+        var gridCache = {};
+        var previousSeed = "";
+
+        function createRandomSymbolGridWithRisk(rows, cols, mines, seed) {
+            var currentSeed = seed.trim();
+
+            if (currentSeed.length !== 10 || currentSeed === "0") {
+                var emptyGrid = [];
+                for (var i = 0; i < rows; i++) {
+                    emptyGrid[i] = [];
+                    for (var j = 0; j < cols; j++) {
+                        emptyGrid[i][j] = "<img class='nobox' src='nobox.webp'>";
+                    }
+                }
+                return emptyGrid;
+            }
+
+            if (currentSeed in gridCache) {
+                return gridCache[currentSeed];
+            }
+
+            var grid = [];
+            for (var i = 0; i < rows; i++) {
+                grid[i] = [];
+                for (var j = 0; j < cols; j++) {
+                    if (Math.random() < mines / (rows * cols)) {
+                        grid[i][j] = "<img class='mine' src='mine.webp'>";
+                    } else {
+                        grid[i][j] = "<img class='safe' src='safe.webp'>";
+                    }
+                }
+            }
+
+            gridCache[currentSeed] = grid;
+            previousSeed = currentSeed;
+
+            return grid;
+        }
+
+        function printRandomSymbolGrid(grid) {
+            var output = "<table>";
+            for (var i = 0; i < grid.length; i++) {
+                output += "<tr>";
+                for (var j = 0; j < grid[i].length; j++) {
+                    output += "<td class='" + (grid[i][j].includes('nobox') ? 'nobox' : (grid[i][j].includes('safe') ? 'safe' : 'mine')) + "'>" + grid[i][j] + "</td>";
+                }
+                output += "</tr>";
+            }
+            output += "</table>";
+            document.getElementById("output").innerHTML = output;
+        }
+
+        function generateGrid() {
+            var riskLevel = parseInt(document.getElementById("riskLevelInput").value);
+            var seed = document.getElementById("seedInput").value;
+            var rows = 5;
+            var cols = 5;
+            var mines;
+
+            switch (riskLevel) {
+                case 1: // Easy
+                    mines = Math.floor(Math.random() * 9) + 15;
+                    break;
+                case 2: // Medium
+                    mines = Math.floor(Math.random() * 5) + 10;
+                    break;
+                case 3: // Hard
+                    mines = Math.floor(Math.random() * 5) + 6;
+                    break;
+                default:
+                    mines = Math.floor(Math.random() * 20) + 3;
+                    break;
+            }
+
+            if ((seed.length !== 10 && seed !== "0") || seed === "0") {
+                var randomSymbolGrid = createRandomSymbolGridWithRisk(rows, cols, mines, seed);
+                printRandomSymbolGrid(randomSymbolGrid);
+            } else {
+                var randomSymbolGrid = createRandomSymbolGridWithRisk(rows, cols, mines, seed);
+                printRandomSymbolGrid(randomSymbolGrid);
+            }
+        }
+
+        document.getElementById("riskLevelInput").addEventListener("change", function() {
+            generateGrid();
+        });
+        
+        document.getElementById("seedInput").addEventListener("input", function() {
+            generateGrid();
+        });
+
+        generateGrid();
+    </script>
+    <div class="made-by">Made by Mandq</div>
+</html>
